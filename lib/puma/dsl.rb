@@ -1521,6 +1521,17 @@ module Puma
       end
     end
 
+    # Enables 499 status logging for client-initiated disconnects.
+    #
+    # The default is +false+.
+    #
+    # @example
+    #   log_client_closed_request
+
+    def log_client_closed_request
+      @options[:log_client_closed_request] = true
+    end
+
     private
 
     # To avoid adding cert_pem and key_pem as URI params, we store them on the

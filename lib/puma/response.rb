@@ -110,6 +110,17 @@ module Puma
       io_buffer.reset
       app_body.close if app_body.respond_to? :close
       client&.tempfile_close
+
+      if @options[:log_client_closed_request] && closed_socket?(socket)
+        @log_writer.log(sprintf(%{[%s] - "%s %s %s" %s},
+          Time.now.strftime("%d/%b/%Y:%H:%M:%S %z"),
+          env[REQUEST_METHOD],
+          env[REQUEST_URI],
+          env[SERVER_PROTOCOL],
+          "499 (Client Closed Request)"
+        ))
+      end
+
       if after_reply = env[RACK_AFTER_REPLY]
         after_reply.each do |o|
           begin
